@@ -1,65 +1,15 @@
 package com.br.anisberto.forum.service
 
-import com.br.anisberto.forum.model.Curso
+import com.br.anisberto.forum.dto.TopicoDTO
 import com.br.anisberto.forum.model.Topico
-import com.br.anisberto.forum.model.Usuario
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
-class TopicoService(private var topicos: List<Topico>) {
-
-    init {
-        val topico = Topico(
-            id = 1,
-            titulo = "Duvida Kotlin",
-            mensagem = "Variaveis no Kotlin",
-            curso = Curso(
-                id = 1,
-                nome = "Kotlin",
-                categoria = "Programacao"
-            ),
-            autor = Usuario(
-                id = 1,
-                nome = "Ana da Silva",
-                email = "ana@email.com"
-            )
-        )
-
-        val topico2 = Topico(
-            id = 2,
-            titulo = "Duvida Kotlin 2",
-            mensagem = "Variaveis no Kotlin 2",
-            curso = Curso(
-                id = 1,
-                nome = "Kotlin",
-                categoria = "Programacao"
-            ),
-            autor = Usuario(
-                id = 1,
-                nome = "Ana da Silva",
-                email = "ana@email.com"
-            )
-        )
-
-        val topico3 = Topico(
-            id = 3,
-            titulo = "Duvida Kotlin 3",
-            mensagem = "Variaveis no Kotlin 3",
-            curso = Curso(
-                id = 1,
-                nome = "Kotlin",
-                categoria = "Programacao"
-            ),
-            autor = Usuario(
-                id = 1,
-                nome = "Ana da Silva",
-                email = "ana@email.com"
-            )
-        )
-
-        topicos = Arrays.asList(topico, topico2, topico3)
-    }
+class TopicoService(
+    private var topicos: List<Topico> = ArrayList(),
+    private val cursoService: CursoService,
+    private val usuarioService: UsuarioService
+) {
 
     fun listar(): List<Topico> {
         return topicos;
@@ -69,5 +19,31 @@ class TopicoService(private var topicos: List<Topico>) {
         return topicos.stream().filter { value ->
             value.id == id
         }.findFirst().get()
+    }
+
+    fun cadastrar(dto: TopicoDTO): Topico {
+        topicos = topicos.plus(
+            Topico(
+                id = getItTopicoMock(topicos),
+                titulo = dto.titulo,
+                mensagem = dto.mensagem,
+                curso = cursoService.findById(dto.idCurso),
+                autor = usuarioService.findById(dto.idUsuario)
+            )
+        )
+        return topicos.get(topicos.lastIndex);
+    }
+
+    fun getItTopicoMock(topicos: List<Topico>): Long {
+        var counterElements: Long = 0;
+        counterElements = topicos.count().toLong();
+        println("Totao de elementos $counterElements")
+        if (counterElements.toInt() == 0) {
+            println("Proximo id sera $counterElements")
+            return (++counterElements);
+        } else {
+            println("Proximo id sera $counterElements")
+            return (counterElements + 1);
+        }
     }
 }

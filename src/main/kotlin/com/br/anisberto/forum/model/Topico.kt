@@ -1,8 +1,10 @@
 package com.br.anisberto.forum.model
 
 import com.br.anisberto.forum.enumeration.TopicoStatus
+import lombok.Builder
 import java.time.LocalDateTime
 
+@Builder
 data class Topico(
     val id: Long? = null,
     val titulo: String,
