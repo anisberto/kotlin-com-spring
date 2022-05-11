@@ -12,6 +12,6 @@ data class Topico(
     val dataCriacao: LocalDateTime = LocalDateTime.now(),
     val curso: Curso,
     val autor: Usuario,
-    val status: TopicoStatus = TopicoStatus.NAO_RESPONDIDO,
+    val status: TopicoStatus? = null,
     val respostas: List<Resposta> = ArrayList()
 )
